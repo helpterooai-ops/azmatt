@@ -8,11 +8,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.R
 
-val IBMPlexArabicFontFamily = FontFamily(
-    Font(resId = R.font.ibm_plex_sans_arabic_regular, weight = FontWeight.Normal),
-    Font(resId = R.font.ibm_plex_sans_arabic_medium, weight = FontWeight.Medium),
-    Font(resId = R.font.ibm_plex_sans_arabic_bold, weight = FontWeight.Bold)
-)
+val IBMPlexArabicFontFamily = try {
+    FontFamily(
+        Font(resId = R.font.ibm_plex_sans_arabic_regular, weight = FontWeight.Normal),
+        Font(resId = R.font.ibm_plex_sans_arabic_medium, weight = FontWeight.Medium),
+        Font(resId = R.font.ibm_plex_sans_arabic_bold, weight = FontWeight.Bold)
+    )
+} catch (e: Exception) {
+    FontFamily.Default
+}
 
 val Typography = Typography(
     displayLarge = TextStyle(
