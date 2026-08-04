@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "140256441292",
+    "project_id": "azmat-f82b0",
+    "storage_bucket": "azmat-f82b0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140256441292:android:c6b0746ff222603d3ea369",
+        "android_client_info": {
+          "package_name": "com.aistudio.azamat.fuel"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3ZLbjbWJhhVO_hIO1-C_LnWehn2IXN44"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

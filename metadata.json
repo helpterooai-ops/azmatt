@@ -1,0 +1,6 @@
+{
+  "name": "أزمات",
+  "description": "تابع توفر المشتقات النفطية والمحطات القريبة منك بسهولة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
