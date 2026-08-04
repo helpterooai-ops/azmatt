@@ -55,12 +55,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.components.GlassCard
+import com.example.ui.components.QuickThemeToggleButton
 import com.example.ui.viewmodel.AuthUiState
 import com.example.ui.viewmodel.AuthViewModel
+import com.example.ui.viewmodel.ThemeViewModel
 
 @Composable
 fun RegisterScreen(
     authViewModel: AuthViewModel,
+    themeViewModel: ThemeViewModel,
     onNavigateToLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -74,6 +77,7 @@ fun RegisterScreen(
     var isConfirmPasswordVisible by remember { mutableStateOf(false) }
 
     val registerState by authViewModel.registerState.collectAsState()
+    val currentThemeMode by themeViewModel.themeMode.collectAsState()
     val isLoading = registerState is AuthUiState.Loading
 
     Box(
@@ -82,6 +86,19 @@ fun RegisterScreen(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
+        // Quick Theme Toggle Button top corner
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp, end = 20.dp),
+            contentAlignment = Alignment.TopEnd
+        ) {
+            QuickThemeToggleButton(
+                currentThemeMode = currentThemeMode,
+                onToggleTheme = { themeViewModel.toggleTheme() }
+            )
+        }
+
         // Background subtle glow
         Box(
             modifier = Modifier

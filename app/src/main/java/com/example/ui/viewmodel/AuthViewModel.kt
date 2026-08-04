@@ -107,6 +107,7 @@ class AuthViewModel(
 
             result.fold(
                 onSuccess = { profile ->
+                    _currentUserProfile.value = profile
                     _registerState.value = AuthUiState.Success("تم إنشاء الحساب بنجاح!")
                     // Automatically pass email and password to Login Screen
                     _prefilledEmail.value = cleanEmail
@@ -119,6 +120,30 @@ class AuthViewModel(
                 },
                 onFailure = { error ->
                     _registerState.value = AuthUiState.Error(error.localizedMessage ?: "حدث خطأ غير متوقع أثناء إنشاء الحساب.")
+                }
+            )
+        }
+    }
+
+    fun updateUserProfile(
+        name: String,
+        username: String,
+        onResult: (Boolean, String?) -> Unit
+    ) {
+        if (name.isBlank() || username.isBlank()) {
+            onResult(false, "يرجى تعبئة جميع الحقول المطلوبة.")
+            return
+        }
+
+        viewModelScope.launch {
+            val result = repository.updateUserProfile(name, username)
+            result.fold(
+                onSuccess = { updated ->
+                    _currentUserProfile.value = updated
+                    onResult(true, "تم تحديث الملف الشخصي بنجاح")
+                },
+                onFailure = { err ->
+                    onResult(false, err.localizedMessage ?: "فشل تحديث البيانات")
                 }
             )
         }
@@ -164,6 +189,27 @@ class AuthViewModel(
         _registerState.value = AuthUiState.Idle
         _loginNoticeMessage.value = null
         onLoggedOutNavToAuth()
+    }
+
+    fun deleteAccount(onSuccessNavToLogin: () -> Unit) {
+        viewModelScope.launch {
+            _loginState.value = AuthUiState.Loading
+            val result = repository.deleteAccount()
+
+            result.fold(
+                onSuccess = {
+                    _currentUserProfile.value = null
+                    _isUserLoggedIn.value = false
+                    _loginState.value = AuthUiState.Idle
+                    _registerState.value = AuthUiState.Idle
+                    _loginNoticeMessage.value = "تم حذف حسابك بنجاح من قاعدة البيانات. يمكنك إنشاء حساب جديد في أي وقت."
+                    onSuccessNavToLogin()
+                },
+                onFailure = { error ->
+                    _loginState.value = AuthUiState.Error(error.localizedMessage ?: "تعذر حذف الحساب.")
+                }
+            )
+        }
     }
 
     fun resetNoticeMessage() {

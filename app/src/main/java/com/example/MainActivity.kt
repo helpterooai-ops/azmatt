@@ -36,6 +36,7 @@ import com.example.ui.screens.ProfileScreen
 import com.example.ui.screens.RegisterScreen
 import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.viewmodel.AuthViewModel
+import com.example.ui.viewmodel.ThemeViewModel
 
 enum class AppFlowState {
     REGISTER,
@@ -46,11 +47,19 @@ enum class AppFlowState {
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        try {
+            if (com.google.firebase.FirebaseApp.getApps(this).isEmpty()) {
+                com.google.firebase.FirebaseApp.initializeApp(this)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
+            val themeViewModel: ThemeViewModel = viewModel()
+            MyApplicationTheme(themeViewModel = themeViewModel) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    AzamatAppShell()
+                    AzamatAppShell(themeViewModel = themeViewModel)
                 }
             }
         }
@@ -59,6 +68,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun AzamatAppShell(
+    themeViewModel: ThemeViewModel,
     authViewModel: AuthViewModel = viewModel()
 ) {
     val isUserLoggedIn by authViewModel.isUserLoggedIn.collectAsState()
@@ -77,6 +87,7 @@ fun AzamatAppShell(
             AppFlowState.LOGIN -> {
                 LoginScreen(
                     authViewModel = authViewModel,
+                    themeViewModel = themeViewModel,
                     onNavigateToRegister = { flowState = AppFlowState.REGISTER },
                     onNavigateToHome = { flowState = AppFlowState.MAIN_APP },
                     modifier = Modifier.statusBarsPadding()
@@ -85,6 +96,7 @@ fun AzamatAppShell(
             AppFlowState.REGISTER -> {
                 RegisterScreen(
                     authViewModel = authViewModel,
+                    themeViewModel = themeViewModel,
                     onNavigateToLogin = { flowState = AppFlowState.LOGIN },
                     modifier = Modifier.statusBarsPadding()
                 )
@@ -110,11 +122,15 @@ fun AzamatAppShell(
                             label = "TabTransition"
                         ) { targetTab ->
                             when (targetTab) {
-                                NavTab.HOME -> HomeScreen()
-                                NavTab.CREATE_REPORT -> CreateReportScreen()
-                                NavTab.NOTIFICATIONS -> NotificationsScreen()
+                                NavTab.HOME -> HomeScreen(themeViewModel = themeViewModel)
+                                NavTab.CREATE_REPORT -> CreateReportScreen(
+                                    authViewModel = authViewModel,
+                                    themeViewModel = themeViewModel
+                                )
+                                NavTab.NOTIFICATIONS -> NotificationsScreen(themeViewModel = themeViewModel)
                                 NavTab.PROFILE -> ProfileScreen(
                                     authViewModel = authViewModel,
+                                    themeViewModel = themeViewModel,
                                     onNavigateToLogin = { flowState = AppFlowState.LOGIN }
                                 )
                             }

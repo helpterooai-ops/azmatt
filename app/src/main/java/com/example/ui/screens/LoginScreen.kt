@@ -58,12 +58,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.R
 import com.example.ui.components.GlassCard
+import com.example.ui.components.QuickThemeToggleButton
 import com.example.ui.viewmodel.AuthUiState
 import com.example.ui.viewmodel.AuthViewModel
+import com.example.ui.viewmodel.ThemeViewModel
 
 @Composable
 fun LoginScreen(
     authViewModel: AuthViewModel,
+    themeViewModel: ThemeViewModel,
     onNavigateToRegister: () -> Unit,
     onNavigateToHome: () -> Unit,
     modifier: Modifier = Modifier
@@ -72,6 +75,7 @@ fun LoginScreen(
     val prefilledPassword by authViewModel.prefilledPassword.collectAsState()
     val noticeMessage by authViewModel.loginNoticeMessage.collectAsState()
     val loginState by authViewModel.loginState.collectAsState()
+    val currentThemeMode by themeViewModel.themeMode.collectAsState()
 
     var email by remember { mutableStateOf(prefilledEmail) }
     var password by remember { mutableStateOf(prefilledPassword) }
@@ -95,6 +99,19 @@ fun LoginScreen(
             .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
+        // Quick Theme Toggle Button top corner
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp, end = 20.dp),
+            contentAlignment = Alignment.TopEnd
+        ) {
+            QuickThemeToggleButton(
+                currentThemeMode = currentThemeMode,
+                onToggleTheme = { themeViewModel.toggleTheme() }
+            )
+        }
+
         // Decorative background glow
         Box(
             modifier = Modifier

@@ -42,12 +42,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.collectAsState
 import com.example.ui.components.GlassCard
+import com.example.ui.components.QuickThemeToggleButton
+import com.example.ui.viewmodel.ThemeViewModel
 
 @Composable
 fun HomeScreen(
+    themeViewModel: ThemeViewModel,
     modifier: Modifier = Modifier
 ) {
+    val currentThemeMode by themeViewModel.themeMode.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("الكل") }
     val categories = listOf("الكل", "بترول", "ديزل", "غاز")
@@ -83,21 +88,30 @@ fun HomeScreen(
                 )
             }
 
-            GlassCard(
-                shape = CircleShape,
-                elevation = 4.dp,
-                modifier = Modifier.size(48.dp)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                QuickThemeToggleButton(
+                    currentThemeMode = currentThemeMode,
+                    onToggleTheme = { themeViewModel.toggleTheme() }
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                GlassCard(
+                    shape = CircleShape,
+                    elevation = 4.dp,
+                    modifier = Modifier.size(44.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Outlined.LocalGasStation,
-                        contentDescription = "أيقونة المحطة",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.LocalGasStation,
+                            contentDescription = "أيقونة المحطة",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
                 }
             }
         }
